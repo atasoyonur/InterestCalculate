@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .wrapper{
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .c-wrapper{
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+            max-width: 600px;
+            width: 100%;
+            background-color: whitesmoke;
+            border-radius: 20px;
+            padding: 1.6rem;
+        }
+        .content-wrapper{
+            background-color: #fff;
+            grid-column: 1/8;
+            display: inline-flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+        .m{
+            border-radius: 10px;
+        }
+        .p{
+            padding: 1rem;
+        }
+        #moneybar,#monthbar {
+  -webkit-appearance: none;  
+  appearance: none;
+  width: 100%; 
+  height: 4px; 
+  background: #d3d3d3; 
+  outline: none; 
+  opacity: 0.7; 
+  -webkit-transition: .2s; 
+  transition: opacity .2s;
+}
+#moneybar:hover,#monthbar:hover {
+  opacity: 1; 
+}
+#moneybar::-webkit-slider-thumb,#monthbar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px; 
+  border-radius: 4px;
+  background-color:cadetblue;
+  cursor: pointer; 
+}
+#monthbar::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px; 
+  border-radius: 50%;
+  background-color:cadetblue;
+}
+#moneybar::-moz-range-thumb,#monthbar::-moz-range-thumb {
+  width: 10px; 
+  height: 10px; 
+  background: #04AA6D; 
+  cursor: pointer; 
+}
+.dollar::-webkit-slider-thumb{
+    background: url(img/dollar.png);
+}
+.month::-webkit-slider-thumb{
+    background: none;
+}
+.grid{
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    gap: 1rem;
+}
+.right-display{
+    grid-column: 8/-1;
+    position: relative;
+}
+#money,#month{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: .8rem;
+    font-size: 22px;
+    text-align: right;
+    padding-right: 62px;
+}
+.money::after,.month::after{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    content: "USD";
+    right: 0;
+    top: 0;
+    color: cadetblue;
+    font-weight: bold;
+    height: 62px;
+    width: 62px;
+    font-size: 20px;
+}
+.month::after{
+  content: "mo";  
+}
+.btn{
+    grid-column: 1/8;
+    background-color: cadetblue;
+    color: #fff;
+    text-align: center;
+    padding: 1.2rem 1.6rem;
+    border-radius: 10px;
+}
+.btn:hover,.send-wrapper:hover{
+    cursor: pointer;
+}
+.result-wrapper{
+    grid-column: 1/13;
+    display: flex;
+    justify-content: end;
+    
+}
+.jsb{
+    justify-content: space-between;
+}
+.result-content{
+    display: inline-flex;
+    grid-column: 1/4;
+    flex-direction: column;
+    gap: 10px;
+}
+.result-box{
+    border: 1px solid cadetblue;
+    border-radius: 5px;
+    padding: .4rem;
+    text-align: center;
+    font-size: 22px;
+    background-color: #fff;
+    color: #757373;
+    min-height: 40.78px;
+}
+.send-wrapper{
+display: flex;
+align-items: center;
+justify-content: center;
+background: -webkit-linear-gradient(to right, #3c1053, #ad5389);
+background: linear-gradient(to right, #3c1053, #ad5389); 
+border-radius: 10px;
+color:whitesmoke;
+padding: .5rem 1.4rem;
+font-weight: bold;
+}
+.basvur{
+    display: inline-block;
+    padding: 10px;
+    letter-spacing: 1px;
+}
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="c-wrapper">
+            <div class="grid">
+            <div class="content-wrapper p m">
+                <label for="moneybar">Kredi Tutarı</label>
+                <input type="range" class="dollar" value="50000" id="moneybar" min="1" max="100000" oninput="setValues(this.value)">
+            </div>
+            <div class="right-display m money">
+<input type="text" id="money"  onchange="moneyRangeSet(this.value)">
+            </div>
+
+            <div class="content-wrapper p m">
+                <label for="monthbar">Vade Süresi</label>
+                <input type="range" value="6"  id="monthbar"  oninput="setValues(this.value)"  min="1" max="36">
+            </div>
+            <div class="right-display m month">
+<input type="text" id="month" onchange="monthRangeSet(this.value)">
+            </div>
+            <span class="btn calculate">Hesapla</span>
+            <div class="result-wrapper jsb">
+                <div class="result-content">
+                    <div class="result-title">Aylık Ödemeniz (USD)</div>
+                    <div class="result-box" id="paying"></div>
+                </div>
+                <div class="result-content">
+                    <div class="result-title">Faiz Oranı %</div>
+                    <div class="result-box" id="interest"></div>
+                </div>
+                <div class="result-content">
+                    <div class="result-title">Toplam Geri Ödemeniz (USD)</div>
+                    <div class="result-box" id="total"></div>
+                </div>
+            </div>
+            <div class="result-wrapper">
+                <div class="send-wrapper">
+                    <span class="basvur">Krediye Başvur</span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <script>
+const moneybar=document.querySelector("#moneybar")
+const money=document.querySelector("#money")
+const monthbar=document.querySelector("#monthbar")
+const month=document.querySelector("#month")
+const calculate=document.querySelector(".calculate")
+
+const payingMonth=document.querySelector("#paying")
+const interest=document.querySelector("#interest")
+const totalPaying=document.querySelector("#total")
+const interestRate=18;
+
+setValues()
+function setValues(value){
+   money.value= moneybar.value;
+   month.value=monthbar.value;
+}
+function moneyRangeSet(value){
+    if(value>100000){
+        money.value=100000
+    }
+    else if(value<1){
+        money.value=1
+    }
+moneybar.value=value
+}
+function monthRangeSet(value){
+    if(value>36){
+        month.value=36
+    }
+    else if(value<1){
+        month.value=1
+    }
+    monthbar.value=value
+}
+moneybar.addEventListener("onchange",()=>{
+money.value=moneybar.value
+})
+calculate.addEventListener("click",()=>{
+    let monthNumber=Number(month.value)
+    oneMonth=OneMonthInterest(monthNumber)
+    payingMonth.innerText=oneMonth
+    interest.innerText=interestRate
+    totalPaying.innerText= Number.parseFloat(oneMonth * monthNumber).toFixed(2)
+})
+function OneMonthInterest(month){
+    
+    let result=((money.value * interestRate)/1200)*month;
+    result= (result + Number(money.value)) / month;
+return Number.parseFloat(result).toFixed(2)
+}
+function MonthsInterest(months){
+    let result=((money.value * interestRate)/1200)*months;
+    console.log("sonuc: "+result)
+return result
+}
+    </script>
+</body>
+</html>
